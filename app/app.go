@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
 	"net"
 
@@ -8,11 +10,12 @@ import (
 )
 
 func main() {
-	ln, err := net.Listen("tcp", ":7")
+	port := *flag.Int("port", 7, "echo tcp port")
+	ln, err := net.Listen("tcp", fmt.Sprintf(":%v", port))
 	if err != nil {
 		log.Fatal(err)
 	}
-	for {
+	for err != nil {
 		con, err := ln.Accept()
 		if err != nil {
 			log.Fatal(err)
