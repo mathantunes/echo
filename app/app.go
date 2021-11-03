@@ -24,6 +24,8 @@ func main() {
 		}
 		if err := echo.Do(con); err != nil {
 			log.Println(err)
+		} else {
+			con.Close()
 		}
 	}
 }

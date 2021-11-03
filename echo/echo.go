@@ -2,10 +2,7 @@ package echo
 
 import "io"
 
-func Do(rwc io.ReadWriteCloser) error {
+func Do(rwc io.ReadWriter) error {
 	_, err := io.Copy(rwc, rwc)
-	if err != nil {
-		return err
-	}
-	return rwc.Close()
+	return err
 }

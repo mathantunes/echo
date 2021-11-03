@@ -6,12 +6,12 @@ import (
 	"testing"
 )
 
-type ReaderWriterCloserMock struct {
+type ReaderWriterMock struct {
 	data          []byte
 	expectedError error
 }
 
-func (r *ReaderWriterCloserMock) Read(p []byte) (n int, err error) {
+func (r *ReaderWriterMock) Read(p []byte) (n int, err error) {
 	if r.expectedError != nil {
 		return 0, r.expectedError
 	}
@@ -22,17 +22,13 @@ func (r *ReaderWriterCloserMock) Read(p []byte) (n int, err error) {
 	return len(r.data), nil
 }
 
-func (r *ReaderWriterCloserMock) Write(p []byte) (n int, err error) {
+func (r *ReaderWriterMock) Write(p []byte) (n int, err error) {
 	copy(r.data, p)
 	return len(r.data), nil
 }
 
-func (r *ReaderWriterCloserMock) Close() error {
-	return nil
-}
-
-func NewReaderWriterCloserMock(message []byte, err error) *ReaderWriterCloserMock {
-	return &ReaderWriterCloserMock{
+func NewReaderWriterMock(message []byte, err error) *ReaderWriterMock {
+	return &ReaderWriterMock{
 		data:          message,
 		expectedError: err,
 	}
@@ -40,7 +36,7 @@ func NewReaderWriterCloserMock(message []byte, err error) *ReaderWriterCloserMoc
 
 func TestDo(t *testing.T) {
 	type args struct {
-		rwc io.ReadWriteCloser
+		rwc io.ReadWriter
 	}
 	tests := []struct {
 		name    string
@@ -51,7 +47,7 @@ func TestDo(t *testing.T) {
 		{
 			name: "Copy text message",
 			args: args{
-				rwc: NewReaderWriterCloserMock([]byte("TextMessage"), nil),
+				rwc: NewReaderWriterMock([]byte("TextMessage"), nil),
 			},
 			wantErr: false,
 			want:    "TextMessage",
@@ -59,7 +55,7 @@ func TestDo(t *testing.T) {
 		{
 			name: "Passing in nil",
 			args: args{
-				rwc: NewReaderWriterCloserMock(nil, io.ErrUnexpectedEOF),
+				rwc: NewReaderWriterMock(nil, io.ErrUnexpectedEOF),
 			},
 			wantErr: true,
 		},
