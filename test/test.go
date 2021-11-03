@@ -20,21 +20,25 @@ func main() {
 			log.Fatal(err)
 		}
 
-		text, _ := reader.ReadString('\n')
-		_, err = conn.Write([]byte(text))
+		text, err := reader.ReadBytes('\n')
+		fatalIfError(err)
+
+		_, err = conn.Write(text)
+		fatalIfError(err)
+
 		if tcpcon, ok := conn.(*net.TCPConn); ok {
 			tcpcon.CloseWrite()
 		}
-		if err != nil {
-			log.Fatal(err)
-		}
 		_, err = io.Copy(os.Stdout, conn)
-		if err != nil {
-			log.Fatal(err)
-		}
+		fatalIfError(err)
+
 		err = conn.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
+		fatalIfError(err)
+	}
+}
+
+func fatalIfError(err error) {
+	if err != nil {
+		log.Fatal(err)
 	}
 }
