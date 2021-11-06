@@ -12,7 +12,7 @@ Can also run in Docker.
 
 ## Testing
 
-* Unit testing
+* Unit testing `go test ./...`
 * `go run ./test/test.go` is a tcp client that reads from stdin, sends to running `app` and outputs the `echo` on stdout.
 
 
